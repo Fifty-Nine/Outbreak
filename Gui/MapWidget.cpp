@@ -32,7 +32,7 @@ void MapWidget::Init()
 }
 
 MapWidget::MapWidget(const Map::Map& map, QWidget *parent_p) : 
-    Canvas(parent_p), 
+    QGLWidget(parent_p),
     m_status(Started),
     m_dispatch_p(new Entities::DefaultDispatcher),
     m_timer(this), 
@@ -45,7 +45,7 @@ MapWidget::MapWidget(const Map::Map& map, QWidget *parent_p) :
 MapWidget::MapWidget(const Map::Map& map, 
                      Entities::EntityDispatcherBase *dispatch_p, 
                      QWidget *parent_p) : 
-    Canvas(parent_p), 
+    QGLWidget(parent_p),
     m_status(Started),
     m_dispatch_p(dispatch_p),
     m_timer(this), 
@@ -68,37 +68,37 @@ void MapWidget::Stop()
     m_timer.stop();
 }
 
-QRectF MapWidget::ScalePoint(const QPoint& loc)
+void MapWidget::initializeGL()
 {
-    qreal x = loc.x();
-    qreal y = loc.y();
-
-    qreal xscale = width() / (qreal)m_map.Width();
-    qreal yscale = height() / (qreal)m_map.Height();
-
-    return QRectF(x * xscale, y * yscale, xscale, yscale);
+    qglClearColor(Qt::black);
 }
 
-void MapWidget::Redraw()
+void MapWidget::resizeGL(int w, int h)
 {
-    glLoadIdentity();
-    glTranslatef( -width() / 2.0f, -height() / 2.0f, 0.0f );
+    glViewport( 0, 0, w, h );
 
-    for (QHash<Map::Location, Entities::Entity*>::const_iterator it = 
-            m_map.Entities().begin(); 
-         it != m_map.Entities().end(); ++it)
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho(
+        0.0f, (float)m_map.Width(), 0.0f, (float)m_map.Height(), -1.0f, 1.0f );
+
+    glMatrixMode( GL_MODELVIEW );
+
+    update();
+}
+
+void MapWidget::paintGL()
+{
+    glClear( GL_COLOR_BUFFER_BIT );
+    glBegin( GL_POINTS );
+
+    foreach ( Entities::Entity *entity_p, m_map.Entities() )
     {
-        Entities::Entity* entity_p = it.value();
         qglColor( entity_p->Color() );
-        Draw( entity_p->Location() );
-        //painter.setPen(entity_p->Color());
-        //painter.drawPoint(entity_p->Location());
-        //painter.fillRect(ScalePoint(entity_p->Location()), entity_p->Color());
+        glVertex2i( entity_p->Location().X, entity_p->Location().Y );
     }
 
-    QPainter painter( this );
-    painter.setPen(QColor(255, 255, 255));
-    painter.drawText(0, 10, QString::number(m_iteration));
+    glEnd();
 }
 
 void MapWidget::TimerTick()

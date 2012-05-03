@@ -2,10 +2,9 @@
 #define OUTBREAK_MAP_WIDGET_H
 
 #include <QFutureWatcher>
+#include <QGLWidget>
 #include <QTimer>
-#include <QWidget>
 
-#include "Canvas.h"
 #include "Entities/EntityDispatch.h"
 #include "Map/Map.h"
 
@@ -15,7 +14,7 @@ namespace Outbreak
 namespace Gui
 {
 
-class MapWidget : public Canvas
+class MapWidget : public QGLWidget
 {
     Q_OBJECT;
 
@@ -29,7 +28,9 @@ public:
     void Stop();
 
 protected:
-    virtual void Redraw();
+    virtual void initializeGL();
+    virtual void resizeGL(int w, int h);
+    virtual void paintGL();
 
 private slots:
     void TimerTick();
@@ -43,8 +44,6 @@ private:
         TimeWait,
         UpdateWait
     } m_status;
-
-    QRectF ScalePoint(const QPoint& point);
 
     Entities::EntityDispatcherBase *m_dispatch_p;
     QTimer m_timer;
