@@ -1,0 +1,37 @@
+Engine improvements
+ * Efficiency improvements 
+   - Searching for entities nearby is slow
+   - Interactions between entities could probably be sped up, but 
+     likely isn't a bottleneck.
+   - GUI drawing seems to be slow with lots of entities on screen.
+   - Improved concurrency -- currently we only use two(?) threads.
+     Given the embarassingly parallel nature of our entities, this is 
+     a no-brainer.
+
+ * Asexual reproduction
+   - Could implement infected human mechanic or bacteria simulation.
+
+Zombies vs. Humans ideas
+ * Zombie horde behavior
+   - Like flocking behavior?
+   - If nearby human, chase, or if nearby pursuing zombie, follow.
+
+ * Infection mechanics
+   - Zombie bites human but human kills zombie. Human becomes infected
+     and later becomes a zombie.
+   - Would make zombies spread in a less uniform fashion.
+   - Would probably still have the standard 
+     "one zombie + one human = two zombies" mechanic.
+
+New simulations
+  * Genetic algorithms for entity decision making?
+    - Could lead to neat emergent behavior.
+
+  * Externally scripted entities
+    - Probably not very useful but should be easy with boost::python and
+      whatnot.
+
+  * Competitive simulation
+    - Along with externally scripted entities, we could create a competitive 
+      arena-type sim where multiple scripted entity types compete for resources.
+

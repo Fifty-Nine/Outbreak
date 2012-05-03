@@ -1,0 +1,5 @@
+*.[oa]
+*.hi
+Mocs/
+Outbreak
+Makefile
