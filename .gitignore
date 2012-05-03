@@ -1,5 +1,6 @@
 *.[oa]
 *.hi
+*.user
 Mocs/
 Outbreak
 Makefile
