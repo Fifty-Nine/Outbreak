@@ -1,4 +1,4 @@
-#include <QPainter>
+#include <QKeyEvent>
 #include <QtConcurrentRun>
 
 #include <boost/bind.hpp>
@@ -99,6 +99,26 @@ void MapWidget::paintGL()
     }
 
     glEnd();
+}
+
+void MapWidget::keyPressEvent(QKeyEvent *event_p)
+{
+    bool is_escape = ( event_p->key() == Qt::Key_Escape );
+    bool alt_pressed = ( event_p->modifiers() & Qt::AltModifier );
+    bool is_alt_enter = alt_pressed && ( event_p->key() == Qt::Key_Return );
+
+    if ( is_escape && isFullScreen() )
+    {
+        setWindowState( windowState() & ~Qt::WindowFullScreen );
+    }
+    else if ( is_escape && !isFullScreen() )
+    {
+        close();
+    }
+    else if ( is_alt_enter )
+    {
+        setWindowState( windowState() ^ Qt::WindowFullScreen );
+    }
 }
 
 void MapWidget::TimerTick()
