@@ -1,3 +1,5 @@
+#include <QVector2D>
+
 #include "Entities/Zombie.h"
 #include "Entities/Human.h"
 #include "Map/Map.h"
@@ -75,13 +77,12 @@ Map::Move::Enum Zombie::Move(const Map::Map& map)
         return Map::Move::Random();
     }
 
-    Human *nearest_p = map.NearestNeighbor<Human>(this, DETECT_RANGE);
+    Human *prey = map.NearestNeighbor<Human>(this, DETECT_RANGE);
 
-    if (nearest_p)
+    if (prey)
     {
         m_n->state = State::PURSUIT;
-        m_n->prey = nearest_p;
-        return Location().DirectionTo(nearest_p->Location());
+        m_n->prey = prey;
     }
 
     switch (m_n->state)
@@ -91,7 +92,7 @@ Map::Move::Enum Zombie::Move(const Map::Map& map)
     case State::IDLE:
         return Idle();
     case State::PURSUIT:
-        return Pursuit();
+        return Pursuit(map);
     default:
         return Map::Move::None;
     };
@@ -142,7 +143,7 @@ Map::Move::Enum Zombie::Idle()
     return Map::Move::None;
 }
 
-Map::Move::Enum Zombie::Pursuit()
+Map::Move::Enum Zombie::Pursuit(const Map::Map& map)
 {
     int dist = Location().TaxiDistance(m_n->prey->Location());
 
@@ -154,7 +155,17 @@ Map::Move::Enum Zombie::Pursuit()
         return Map::Move::None;
     }
 
-    return Location().DirectionTo(m_n->prey->Location());
+    QVector2D us = Location();
+    QVector2D them = m_n->prey->Location();
+
+    Zombie *neighbor = map.NearestNeighbor<Zombie>(this, 5);
+    QVector2D prey_dir = them - us;
+
+    QVector2D move_dir = neighbor ?
+        (prey_dir + -(neighbor->Location() - us)) / 2.0 : prey_dir;
+    QVector2D dest = us + move_dir;
+
+    return Location().DirectionTo(dest);
 }
 } // namespace Entities
 

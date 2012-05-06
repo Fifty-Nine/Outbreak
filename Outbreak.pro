@@ -7,7 +7,7 @@ UICS_DIR = Uics/
 QT += opengl
 
 win32 {
-    INCLUDEPATH += "C:\\Users\\princet\\Downloads\\boost_1_46_0\\boost_1_46_0"
+    INCLUDEPATH += "C:\\Users\\princet\\Downloads\\boost_1_49_0\\boost_1_49_0"
     INCLUDEPATH += .
     QMAKE_CXXFLAGS += /openmp
 }

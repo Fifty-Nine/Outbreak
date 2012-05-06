@@ -32,7 +32,7 @@ protected:
 private:
     Map::Move::Enum Ambling();
     Map::Move::Enum Idle(); 
-    Map::Move::Enum Pursuit();
+    Map::Move::Enum Pursuit(const Map::Map& map);
 
     class State;
 

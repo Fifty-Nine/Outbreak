@@ -12,6 +12,7 @@ namespace
 {
 
 const int AVOIDANCE_FACTOR = 15;
+const int ENDURANCE = 10;
 
 }
 
@@ -78,7 +79,7 @@ Map::Move::Enum Human::Move(const Map::Map& map)
         else if (m_n->action != State::PANICKED)
         {
             m_n->action = State::PANICKED;
-            m_n->counter = 20;
+            m_n->counter = ENDURANCE;
         }
 
         return 
@@ -92,7 +93,7 @@ Map::Move::Enum Human::Move(const Map::Map& map)
 
             if (human_p && human_p->m_c->action == State::PANICKED)
             {
-                m_n->counter = 20;
+                m_n->counter = ENDURANCE;
                 return Map::Move::Opposite(Location().DirectionTo(human_p->Location()));
             }
             
@@ -114,7 +115,7 @@ Map::Move::Enum Human::Move(const Map::Map& map)
     if (human_p && human_p->m_c->action == State::PANICKED)
     {
         m_n->action = State::PANICKED;
-        m_n->counter = 20;
+        m_n->counter = ENDURANCE;
         return Map::Move::Random();
     }
 

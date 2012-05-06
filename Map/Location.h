@@ -2,6 +2,7 @@
 #define OUTBREAK_MAP_LOCATION_H
 
 #include <QPoint>
+#include <QVector2D>
 
 #include "Map/Move.h"
 
@@ -14,13 +15,16 @@ namespace Map
 struct Location
 {
     Location(int x, int y) : X(x), Y(y) { }
+    Location(const QPoint& p) : X(p.x()), Y(p.y()) { }
+    Location(const QVector2D& v) : X(v.x()), Y(v.y()) { }
 
     Location Neighbor(Move::Enum dir) const;
 
     Move::Enum DirectionTo(Location loc) const;
     int TaxiDistance(Location loc) const;
 
-    operator QPoint() { return QPoint(X, Y); }
+    operator QPoint() const { return QPoint(X, Y); }
+    operator QVector2D() const { return QVector2D(X, Y); }
 
     int X;
     int Y;
